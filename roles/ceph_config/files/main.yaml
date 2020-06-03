@@ -1,0 +1,10 @@
+- name: Include a play after another play
+  import_playbook: public_key.yaml
+
+
+- name: Include a play after another play
+  import_playbook: ssh.yaml
+
+- name: Include a play after another play
+  import_playbook: ansible_config.yaml
+

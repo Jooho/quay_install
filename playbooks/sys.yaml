@@ -1,0 +1,5 @@
+- hosts: sys
+  gather_facts: no
+  tasks:
+  - include_role:
+      name: sys_config

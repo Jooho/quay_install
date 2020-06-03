@@ -1,0 +1,5 @@
+
+- name: host file will be overwritten if overwrite_config_file is true 
+  template: src=hosts.j2 dest=/etc/hosts force=true
+
+

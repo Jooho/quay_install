@@ -1,0 +1,19 @@
+# Cluster Installation
+- name: Set up SSH public key for all nodes(Delete meta infor from known_host and add it)
+  block:
+    - name: Delete hosts from known_hosts
+      lineinfile:
+        path: ~/.ssh/known_hosts
+        state: absent
+        regexp: "{{hostvars[item].ansible_host}}"
+      with_items:
+        - "{{groups['sys']}}"
+        - "{{groups['quay']}}"
+        - "{{groups['ceph']}}"
+    
+    - name: For each host, ssh-copy-id my ssh public keys to the host
+      shell: "sshpass -p {{pw}} ssh-copy-id -o StrictHostKeyChecking=no -i {{ssh_public_key}} {{id}}@{{hostvars[item].ansible_host}}; sleep 1"
+      with_items:
+        - "{{groups['sys']}}"
+        - "{{groups['quay']}}"
+        - "{{groups['ceph']}}"

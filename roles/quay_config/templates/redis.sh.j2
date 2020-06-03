@@ -1,0 +1,21 @@
+mkdir -p /var/lib/redis
+
+chmod 777 /var/lib/redis
+
+
+docker login -u="redhat+quay" -p="{{ lookup('env', 'QUAY_IMAGE_AUTH')}}" quay.io
+
+for i in $(docker ps -a|grep redis-32-rhel7|awk '{print $1}')
+do
+  echo "terminate docker ${i}"
+  docker rm $i -f
+done
+
+docker run -d --name=redis --restart=always -p 6379:6379 \
+    -v /var/lib/redis:/var/lib/redis/data:Z \
+    registry.access.redhat.com/rhscl/redis-32-rhel7
+
+{% if inventory_hostname == 'quay01' %}
+
+docker run -d --name quay_config --privileged=true -p 8443:8443 -d quay.io/redhat/quay:v3.3.0 config quaypass 
+{% endif %}

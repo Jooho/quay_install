@@ -1,0 +1,101 @@
+# Docker 
+
+- include_role:
+    name: manage_repos
+
+- name: Install docker
+  yum:
+    name: docker
+    state: present
+    update_cache: yes
+  register: docker_install
+
+- name: Configure docker-storage-setup configuration
+  copy:
+    content: |
+      STORAGE_DRIVER=overlay2
+    dest: /etc/sysconfig/docker-storage-setup
+  when: docker_install.changed
+
+- name: Run docker-storage-setup
+  command: docker-storage-setup
+  when: docker_install.changed
+
+- name: Start and enable docker
+  systemd:
+    name: docker
+    enabled: yes
+    state: started
+  when: docker_install.changed
+
+- name: seilnux packages
+  yum:
+    name: 
+    - libselinux-python
+    - libsemanage-python
+    - firewalld
+    - haproxy
+    state: present
+
+- name: Start and enable firewalld
+  systemd:
+    name: firewalld
+    enabled: yes
+    state: started
+
+- name: haproxy_connect_any on
+  seboolean:
+    name: haproxy_connect_any
+    state: yes
+    persistent: yes
+
+- firewalld:
+    service: http
+    permanent: yes
+    immediate: yes
+    state: enabled
+
+- firewalld:
+    port: 6379/tcp
+    zone: public
+    permanent: yes
+    state: enabled
+    immediate: yes
+
+- firewalld:
+    port: 7480/tcp
+    zone: public
+    permanent: yes
+    state: enabled
+    immediate: yes
+
+- firewalld:
+    port: 5432/tcp
+    zone: public
+    permanent: yes
+    state: enabled
+    immediate: yes
+
+- name: Start and enable firewalld
+  systemd:
+    name: firewalld
+    enabled: yes
+    state: started
+
+- copy: 
+    src: haproxy.config
+    dest: /etc/haproxy/haproxy.cfg
+    
+- name: Start and enable haproxy
+  systemd:
+    name: haproxy
+    enabled: yes
+    state: started
+
+- copy:
+    src: db.sh
+    dest: /root/db.sh
+    mode: 0777
+
+- shell:
+    /root/db.sh

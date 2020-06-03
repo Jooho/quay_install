@@ -1,0 +1,74 @@
+- hosts: localhost
+  gather_facts: no
+  vars_files:
+    - "{{lookup('env', 'PWD')}}/vars.yaml"
+  tasks:
+    - name: Authenticate with engine
+      ovirt_auth:
+        url: "{{ lookup('env', 'OVIRT_URL') }}"
+        username: "{{ lookup('env', 'OVIRT_USERNAME') }}"
+        password: "{{ lookup('env', 'OVIRT_PASSWORD') }}"
+        insecure: yes
+
+    - name: Teardown VMs
+      ovirt_vm:
+        auth: "{{ ovirt_auth }}"
+        name: "{{ vm_prefix }}_{{item.name}}"
+        template: "quay33"
+        cluster: "Default"
+        memory: "{{item.ram}}GiB"
+        memory_max: "{{item.ram}}GiB"
+        operating_system: "Red Hat Enterprise Linux 7.x x64"
+        state: absent
+        wait: True
+      with_items:
+       - { "name": "sysA", "ram": "4"}
+       - { "name": "quay01", "ram": "4"}
+       - { "name": "quay02", "ram": "4"}
+       - { "name": "quay03", "ram": "4"}
+       - { "name": "ceph01", "ram": "8"}
+       - { "name": "ceph02", "ram": "8"}
+       - { "name": "ceph03", "ram": "8"}
+       - { "name": "ceph04", "ram": "8"}
+       - { "name": "ceph05", "ram": "8"}
+      async: 1800
+      poll: 0
+      register: teardown_quay_node_vms_info
+    
+    
+    - name: Wait for VMs Teardown
+      async_status: jid={{ item.ansible_job_id }}
+      register: jobs
+      until: jobs.finished
+      retries: 180
+      delay: 10
+      with_items: 
+         - "{{ teardown_quay_node_vms_info.results }}"
+
+ 
+    - name: Teardown Ceph disk
+      ovirt_disk:
+        auth: "{{ ovirt_auth }}"
+        name: "{{ vm_prefix }}_{{ item.name }}_disk1"
+        vm_name: "{{ vm_prefix }}_{{ item.name }}"
+        size: 20GiB
+        interface: virtio_scsi
+        storage_domain: vmstore
+        state: absent
+      with_items:
+       - { "name": "ceph01", "ram": "8"}
+       - { "name": "ceph02", "ram": "8"}
+       - { "name": "ceph03", "ram": "8"}
+      async: 1800
+      poll: 0
+      register: teardown_ceph_node_vms_info
+ 
+
+    - name: Wait for teardowning disk for ceph
+      async_status: jid={{ item.ansible_job_id }}
+      register: jobs
+      until: jobs.finished
+      retries: 180
+      delay: 10
+      with_items: 
+         - "{{ teardown_ceph_node_vms_info.results }}"

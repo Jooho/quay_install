@@ -1,0 +1,29 @@
+- name: Example Playbook
+  hosts: localhost
+  pre_tasks:
+    - set_fact:
+        default_folder: "/usr/share/ceph-ansible"
+  tasks:
+    - name: Create a symbolic link
+      file:
+        src: /usr/share/ceph-ansible/group_vars
+        dest: /etc/ansible/group_vars
+        state: link
+
+    - name: Create a symbolic link
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+      with_items:
+      - { src: "{{default_folder}}/group_vars/all.yml.sample", dest: "{{default_folder}}/group_vars/all.yml" }
+      - { src: "{{default_folder}}/group_vars/osds.yml.sample", dest: "{{default_folder}}/group_vars/osds.yml" }
+      - { src: "{{default_folder}}/group_vars/rgws.yml.sample", dest: "{{default_folder}}/group_vars/rgws.yml" }
+      - { src: "{{default_folder}}/site.yml.sample", dest: "{{default_folder}}/site.yml" }
+
+    - blockinfile:
+        path: "{{default_folder}}/group_vars/rgws.yml"
+        insertafter: EOF
+        block: |
+           copy_admin_key: true
+           radosgw_interface: eth0
+

@@ -1,0 +1,21 @@
+- hosts: quay
+  gather_facts: no
+  tasks:
+  - include_role:
+      name: quay_config
+
+#- hosts: quay
+#  gather_facts: no
+#  tasks:
+#  - file:
+#      path: "/mnt/quay/config"
+#      state: directory
+#
+#  - copy:
+#      src: "{{ inventory_dir }}/quay-config.tar.gz"
+#      dest: /mnt/quay/config/quay-config.tar.gz
+#
+#  - unarchive:
+#      src: /mnt/quay/config/quay-config.tar.gz
+#      dest: /mnt/quay/config/
+#      remote_src: yes

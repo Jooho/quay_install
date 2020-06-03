@@ -1,0 +1,27 @@
+
+- include_role:
+    name: manage_repos
+
+- copy:
+    src: "{{item}}"
+    dest: "/root/{{item}}"
+    mode: '0777'
+  with_items:
+  - check_ceph_health.sh
+  - main.yaml
+  - ansible_config.yaml
+  - public_key.yaml 
+  - requirements.yaml
+  - ssh.yaml
+  - ansible.cfg
+  - hosts 
+  - vars.yaml
+
+#- copy:
+#    src: "{{item}}"
+#    dest: "/usr/share/ceph-ansible/{{item}}"
+#  with_items:
+#  - ansible.cfg
+#  - hosts 
+#  - vars.yaml
+ 
