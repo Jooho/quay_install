@@ -1,0 +1,13 @@
+ceph_origin: repository
+ceph_repository: rhcs
+ceph_repository_type: cdn
+ceph_rhcs_version: 3
+monitor_interface: eth0
+public_network: 10.8.109.0/24
+
+osd_scenario: collocated
+devices:
+  - /dev/sda
+dmcrypt: true
+osd_auto_discovery: false
+

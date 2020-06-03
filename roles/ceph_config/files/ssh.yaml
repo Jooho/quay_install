@@ -1,0 +1,15 @@
+- name: Example Playbook
+  hosts: localhost
+  tasks:
+    - import_role:
+        name: Jooho.copy_ssh_pub_key
+      vars:
+        target_vms: 
+        - ceph01
+        - ceph02
+        - ceph03
+        - ceph04
+        ssh_public_key: /root/.ssh/id_rsa.pub
+        target_vm_id: root
+        target_vm_pw: redhat
+

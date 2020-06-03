@@ -1,0 +1,4 @@
+id: root
+pw: redhat
+ssh_public_key: "~/.ssh/id_rsa.pub"
+#ssh_public_key: "{{ lookup('file','/home/jooho/.ssh/id_rsa.pub') }}"

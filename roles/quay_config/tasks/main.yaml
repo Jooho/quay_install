@@ -1,0 +1,111 @@
+- block:
+#  - include_role:
+#      name: manage_repos
+#  
+#  - name: Install docker
+#    yum:
+#      name: docker
+#      state: present
+#      update_cache: yes
+#    register: docker_install
+#  
+#  - name: Configure docker-storage-setup configuration
+#    copy:
+#      content: |
+#        STORAGE_DRIVER=overlay2
+#      dest: /etc/sysconfig/docker-storage-setup
+#    when: docker_install.changed
+#  
+#  - name: Run docker-storage-setup
+#    command: docker-storage-setup
+#    when: docker_install.changed
+#  
+#  - name: Start and enable docker
+#    systemd:
+#      name: docker
+#      enabled: yes
+#      state: started
+#    when: docker_install.changed
+  - template:
+      src: redis.sh.j2
+      dest: /root/redis.sh
+      mode: '0777'
+  
+  - shell:
+      /root/redis.sh
+  when: phase=='redis'
+
+##- name: seilnux packages
+##  yum:
+#    name: 
+#    - libselinux-python
+#    - libsemanage-python
+#    - firewalld
+#    - haproxy
+#    state: present
+#
+#- name: Start and enable firewalld
+#  systemd:
+#    name: firewalld
+#    enabled: yes
+#    state: started
+#
+#- name: haproxy_connect_any on
+#  seboolean:
+#    name: haproxy_connect_any
+#    state: yes
+#    persistent: yes
+#
+#- firewalld:
+#    port: 6379/tcp
+#    zone: public
+#    permanent: yes
+#    state: enabled
+#    immediate: yes
+#
+#- firewalld:
+#    port: 7480/tcp
+#    zone: public
+#    permanent: yes
+#    state: enabled
+#    immediate: yes
+#
+#- firewalld:
+#    port: 5432/tcp
+#    zone: trust
+#    permanent: yes
+#    state: enabled
+#    immediate: yes
+#
+#- copy: 
+#    src: haproxy.config
+#    dest: /etc/haproxy/haproxy.cfg
+#    
+#- name: Start and enable haproxy
+#  systemd:
+#    name: haproxy
+#    enabled: yes
+#    state: started
+#
+- block:
+  - file:
+      path: "/mnt/quay/config"
+      state: directory
+  
+  - copy:
+      src: "{{ inventory_dir }}/quay-config.tar.gz"
+      dest: /mnt/quay/config/quay-config.tar.gz
+  
+  - unarchive:
+      src: /mnt/quay/config/quay-config.tar.gz
+      dest: /mnt/quay/config/
+      remote_src: yes
+  
+  - template:
+      src: quay.sh.j2
+      dest: /root/quay.sh
+      mode: '0777'
+  
+  - shell:
+      /root/quay.sh
+  when:  phase == 'quay'

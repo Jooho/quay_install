@@ -1,0 +1,17 @@
+[mons]
+ceph01
+ceph02
+ceph03
+
+[osds]
+ceph01 devices="[ '/dev/sda' ]"
+ceph02 devices="[ '/dev/sda' ]"
+ceph03 devices="[ '/dev/sda' ]"
+
+[mgrs]
+ceph01 devices="[ '/dev/sda' ]"
+ceph02 devices="[ '/dev/sda' ]"
+ceph03 devices="[ '/dev/sda' ]"
+
+[rgws]
+ceph04

@@ -1,0 +1,17 @@
+# RHEV(upstream name: Ovirt) Information
+export OVIRT_USERNAME=CHANGE_ME
+export OVIRT_PASSWORD=CHANGE_ME
+export OVIRT_API_URL=CHANGE_ME
+
+
+# Red hat subscription manager information
+export RHSM_ID='CHANGE_ME'
+export RHSM_PW='CHANGE_ME'
+
+# Subscription Pool ID 
+export BROKER_SUB_POOL_ID="CHANGE_ME"
+export NODE_SUB_POOL_ID="CHANGE_ME"
+
+# Quay image(https://access.redhat.com/solutions/3533201)
+export QUAY_IMAGE_AUTH="CHANGE_ME"
+

@@ -1,0 +1,28 @@
+[QUAYv3:children]
+sys
+quay
+ceph
+
+
+[QUAYv3:vars]
+ansible_ssh_user=root
+ansible_become=true
+
+[rhv]
+localhost ansible_connection=local ssh_public_key=%CHANGE_ME%
+
+[sys]
+sysA ansible_host=%CHANGE_ME%
+
+[quay]
+quay01 ansible_host=%CHANGE_ME%
+quay02 ansible_host=%CHANGE_ME%
+quay03 ansible_host=%CHANGE_ME%
+
+[ceph]
+ceph01 ansible_host=%CHANGE_ME%
+ceph02 ansible_host=%CHANGE_ME%
+ceph03 ansible_host=%CHANGE_ME%
+ceph04 ansible_host=%CHANGE_ME%
+ceph05 ansible_host=%CHANGE_ME%
+

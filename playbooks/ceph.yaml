@@ -1,0 +1,23 @@
+- hosts: ceph
+  gather_facts: no
+  tasks:
+  - include_role:
+      name: ceph_config
+
+- hosts: ceph05
+  gather_facts: no
+  tasks:
+    - yum:
+        name: ceph-ansible
+        state: present
+    - shell: ansible-galaxy install -r /root/requirements.yaml
+
+    - copy:
+        src: "/root/{{item}}"
+        dest: "/usr/share/ceph-ansible/{{item}}"
+        remote_src: yes
+      with_items:
+#      - ansible.cfg
+      - hosts
+      - vars.yaml
+   

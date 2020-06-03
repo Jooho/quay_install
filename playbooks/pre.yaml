@@ -1,0 +1,22 @@
+- hosts: rhv
+  gather_facts: no
+  tasks:
+  - include_role:
+      name: ssh-copy
+
+
+
+- hosts: sys,quay,ceph
+  gather_facts: no
+  vars_files:
+    - "{{lookup('env', 'PWD')}}/vars.yaml"
+  tasks:
+    - name: Register RHSM 
+      include_role:
+         name: subscription_attach
+      vars:
+         pool_name: "{{subs.broker_sub_pool  | default(false)}}"
+         pool_id: "{{ subs.broker_sub_pool_id  | default(false)}}"
+
+    - include_role:
+        name: hosts_file

@@ -1,0 +1,15 @@
+127.0.0.1               localhost.localdomain localhost
+::1             localhost6.localdomain6 localhost6
+
+
+{% for item in groups.sys %}
+{{hostvars[item].ansible_host}} {{item}}
+{% endfor %}
+
+{% for item in groups.quay %}
+{{hostvars[item].ansible_host}} {{item}}
+{% endfor %}
+
+{% for item in groups.ceph %}
+{{hostvars[item].ansible_host}} {{item}}
+{% endfor %}

@@ -1,0 +1,23 @@
+
+- hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Authenticate with engine
+      ovirt_auth:
+        #url: https://rhvm.tamlab.rdu2.redhat.com/ovirt-engine/api
+        url: https://10.8.109.7/ovirt-engine/api
+        username: admin@internal
+        password: redhat
+        insecure: yes
+
+    - name: Upload RHLE image
+      ovirt_disk:
+        auth: "{{ ovirt_auth }}"
+        name: rhel_7U8
+        size: 32GiB 
+        interface: virtio_scsi
+        storage_domain: vmstore
+        bootable: yes
+        timeout: 3600 
+        upload_image_path: /home/jooho/dev/git/rdu_rhv_ansible-ocp-4/QUAY/rhel-server-7.8-x86_64-kvm.qcow2
+        wait: yes
